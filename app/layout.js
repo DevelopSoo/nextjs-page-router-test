@@ -1,4 +1,13 @@
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { ConfigProvider } from "antd";
+import StyledComponentsRegistry from "./lib/registry";
 import "./globals.css";
+import localFont from "next/font/local";
+
+export const myFont = localFont({
+  src: "./assets/fonts/GrandifloraOne-Regular.ttf",
+  display: "swap",
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -7,8 +16,23 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className={myFont.className}>
+      {/* AntdRegistry 적용 -> nextjs에서 깜빡임 증상 없앤다고 합니다 */}
+      <AntdRegistry>
+        <body>
+          {/* 폰트 적용 */}
+          <ConfigProvider
+            theme={{
+              token: {
+                fontFamily: myFont.style.fontFamily,
+              },
+            }}
+          >
+            {/* styled component 을 server component에 적용할 수 있게 세팅하는 것 */}
+            <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+          </ConfigProvider>
+        </body>
+      </AntdRegistry>
     </html>
   );
 }
